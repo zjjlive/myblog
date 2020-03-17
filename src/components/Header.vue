@@ -71,18 +71,6 @@ export default {
     };
   },
   methods: {
-    returnQueryStringToHome() {
-      let queryString = this.queryString;
-      this.$emit("get-query-string", queryString);
-    },
-    userInfo() {
-      let user = this.$store.getters.getUser;
-      this.$router.push(`/user/${user.id}/info`);
-    },
-    userBlogs() {
-      let user = this.$store.getters.getUser;
-      this.$router.push(`/user/${user.id}/blog`);
-    },
     signOut() {
       localStorage.clear();
       this.user = null;
@@ -91,64 +79,9 @@ export default {
       this.$store.commit("removeIsSigned");
       this.$router.push("/");
     },
-    search(queryString, cb) {
-      let condition = this.queryString;
-      let results = [];
-      let array = [];
-      axios
-        .get("/BlogVue/api/blogs-condition", {
-          params: {
-            condition: condition
-          }
-        })
-        .then(response => {
-          let data = response.data;
-          let blogs = data.blogs;
-          if (data.errorCode == 0) {
-            for (let blog of blogs) {
-              let item = {
-                value: blog.title,
-                category: blog.category,
-                blogId: blog.id
-              };
-              array.push(item);
-            }
-          }
-          results = condition
-            ? array.filter(this.createFilter(condition))
-            : array;
-          cb(results);
-        });
-    },
-    createFilter(queryString) {
-      return item => {
-        return (
-          item.value.indexOf(queryString) >= 0 ||
-          item.category.indexOf(queryString) >= 0
-        );
-      };
-    },
-    handleSearch() {
-      let queryString = this.queryString;
-      this.$store.commit("addQueryString", queryString);
-      // let pageNum = 1;
-      this.$emit("get-query-string", queryString);
-    },
-    handleSelect(item) {
-      // console.log(item);
-      // console.log(this.queryString);
-    },
     signIn() {
       this.$router.push("/signIn");
     },
-    writeBlog() {
-      let isSigned = this.$store.getters.getIsSigned;
-      if (isSigned) this.$router.push("/write");
-      else {
-        this.$message.error("还没登录，先去登录吧！");
-        this.$router.push("/signIn");
-      }
-    }
   },
   beforeMount() {
     this.isSigned = this.$store.getters.getIsSigned;

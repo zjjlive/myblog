@@ -288,7 +288,7 @@ export default {
         });
         axios({
           method: "post",
-          url: "/BlogVue/api/sign-in",
+          url: "/MyBlogServer/api/sign-in",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
